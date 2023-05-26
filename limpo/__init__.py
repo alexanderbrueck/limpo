@@ -1,1 +1,1 @@
-from limpo import Table
+from limpo.limpo import Table
