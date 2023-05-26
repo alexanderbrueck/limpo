@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-#from pydataset import data
+
+# from pydataset import data
 
 
 class Table:
@@ -18,7 +19,7 @@ class Table:
 
         Returns:
             result (pandas.DataFrame or str):
-                DataFrame with information about duplicates or str in case there are none.           
+                DataFrame with information about duplicates or str in case there are none.
         """
         dic = {}
 
@@ -48,26 +49,36 @@ class Table:
 
         Returns:
             result (pandas.DataFrame):
-                DataFrame with information about duplicates            
+                DataFrame with information about duplicates
         """
         dic = {}
 
         for col in columns:
-            series=self.dataframe[col]
+            series = self.dataframe[col]
             non_null_values = series[~series.isnull()]
-            null_values =  sum(series.isnull())
+            null_values = sum(series.isnull())
             non_null_values_count = len(non_null_values)
             unique_non_null_values = len(non_null_values.unique())
-            dic.update({col: [null_values, non_null_values_count, unique_non_null_values]})
+            dic.update(
+                {col: [null_values, non_null_values_count, unique_non_null_values]}
+            )
 
         if dic:
             result = pd.DataFrame.from_dict(dic, orient="index").reset_index()
-            result = result.rename(columns={0: "null_values", 1: "non_null_values", 2: "unique_non_null_values", "index": "column"})
+            result = result.rename(
+                columns={
+                    0: "null_values",
+                    1: "non_null_values",
+                    2: "unique_non_null_values",
+                    "index": "column",
+                }
+            )
             result["duplicates"] = self.records - result["unique_non_null_values"]
             result["percent_duplicates"] = result["duplicates"] / non_null_values_count
         else:
-            return "No duplicate values found"    
-    
+            return "No duplicate values found"
+
+
 # data = data('cake')
 # df = Table(data)
 # #print(data)
